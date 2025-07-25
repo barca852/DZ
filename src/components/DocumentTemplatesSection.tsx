@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -13,30 +14,34 @@ import {
   Car,
   Home
 } from 'lucide-react';
+import { NewTemplateModal } from '@/components/modals/NewTemplateModal';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function DocumentTemplatesSection() {
+  // Ajout de l'état pour les modales métier
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
+  const [showCollaborativeEditor, setShowCollaborativeEditor] = useState(false);
+  const [templateCategory, setTemplateCategory] = useState<string|null>(null);
+
+  // Simule l'ouverture d'une modale de visualisation de modèles pour une catégorie
   const handleBrowseTemplates = (categoryTitle: string) => {
-    console.log(`Browsing templates for: ${categoryTitle}`);
-    // Dispatch event to show templates modal or navigate to templates section
-    window.dispatchEvent(new CustomEvent('show-templates-modal', { 
-      detail: { category: categoryTitle }
-    }));
+    setTemplateCategory(categoryTitle);
+    setShowTemplateModal(true);
   };
 
+  // Ouvre la modale de création de modèle ou navigue vers la collaboration
   const handleFeatureAction = (actionType: string) => {
-    console.log(`Feature action: ${actionType}`);
     if (actionType === 'Créer un modèle') {
-      window.dispatchEvent(new CustomEvent('show-template-creator'));
+      setShowNewTemplateModal(true);
     } else if (actionType === 'Collaborer') {
-      window.dispatchEvent(new CustomEvent('navigate-to-section', { 
-        detail: 'collaborative-workspace' 
-      }));
+      setShowCollaborativeEditor(true);
     }
   };
 
+  // Ouvre la modale d'édition collaborative
   const handleOpenEditor = () => {
-    console.log('Opening collaborative editor');
-    window.dispatchEvent(new CustomEvent('show-collaborative-editor'));
+    setShowCollaborativeEditor(true);
   };
 
   const categories = [
@@ -92,6 +97,39 @@ export function DocumentTemplatesSection() {
 
   return (
     <div className="space-y-8">
+      {/* Modale de visualisation de modèles */}
+      {showTemplateModal && templateCategory && (
+        <DocumentViewerModal
+          isOpen={showTemplateModal}
+          onClose={() => setShowTemplateModal(false)}
+          document={{
+            title: `Modèles de la catégorie : ${templateCategory}`,
+            content: `Ici s'affichent les modèles de la catégorie "${templateCategory}". (À remplacer par un vrai listing métier)`
+          }}
+        />
+      )}
+      {/* Modale de création de modèle */}
+      {showNewTemplateModal && (
+        <NewTemplateModal
+          isOpen={showNewTemplateModal}
+          onClose={() => setShowNewTemplateModal(false)}
+          onSave={(data) => {
+            // TODO: Sauvegarde réelle du modèle
+            setShowNewTemplateModal(false);
+          }}
+        />
+      )}
+      {/* Modale d'édition collaborative (placeholder métier) */}
+      {showCollaborativeEditor && (
+        <DocumentViewerModal
+          isOpen={showCollaborativeEditor}
+          onClose={() => setShowCollaborativeEditor(false)}
+          document={{
+            title: "Éditeur collaboratif",
+            content: "Ici s'affiche l'éditeur collaboratif métier. (À remplacer par l'intégration réelle de l'éditeur collaboratif)"
+          }}
+        />
+      )}
       {/* Categories */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.map((category, index) => {
