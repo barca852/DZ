@@ -48,6 +48,10 @@ export function CustomFormLibrary() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [currentForm, setCurrentForm] = useState<any>(null);
+  
+  // États pour la recherche et le filtrage
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const customForms: CustomForm[] = [
     {
