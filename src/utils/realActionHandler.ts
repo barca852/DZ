@@ -857,31 +857,47 @@ export class RealActionHandler {
   }
 
   private openProcedureForm(data?: any) {
-    // Implémentation similaire pour les procédures
-    const modal = this.createModal('Formulaire Procédure', `
-      <p>Formulaire de création/modification de procédure (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de création de procédure
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'procedures-enrichment' }
+    }));
+    toast({
+      title: "Création de procédure",
+      description: "Accédez à l'interface de création de procédure dans la section Procédures.",
+    });
   }
 
   private openNewsForm(data?: any) {
-    // Implémentation similaire pour les actualités
-    const modal = this.createModal('Formulaire Actualité', `
-      <p>Formulaire de création/modification d'actualité (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de création d'actualité
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'news' }
+    }));
+    toast({
+      title: "Création d'actualité",
+      description: "Accédez à l'interface de création d'actualité dans la section Actualités.",
+    });
   }
 
   private openTemplateCreator(data?: any) {
-    // Implémentation pour le créateur de modèles
-    const modal = this.createModal('Créateur de Modèles', `
-      <p>Interface de création de modèles (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de création de modèles
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'document-templates' }
+    }));
+    toast({
+      title: "Création de modèle",
+      description: "Accédez à l'interface de création de modèles dans la section Modèles de documents.",
+    });
   }
 
   private openTemplateEditor(template: any) {
-    // Implémentation pour l'éditeur de modèles
-    const modal = this.createModal('Éditeur de Modèles', `
-      <p>Interface d'édition du modèle "${template.name}" (à implémenter)</p>
-    `);
+    // Redirection vers l'interface d'édition de modèles
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'document-templates' }
+    }));
+    toast({
+      title: "Édition de modèle",
+      description: `Modifiez le modèle "${template.name}" dans l'interface de gestion des modèles.`,
+    });
   }
 
   private displayFavorites(favorites: any[]) {
@@ -901,17 +917,38 @@ export class RealActionHandler {
   }
 
   private openSavedSearchEditor(searchId: string) {
-    // Implémentation pour l'éditeur de recherches sauvegardées
-    const modal = this.createModal('Modifier la Recherche', `
-      <p>Éditeur de recherche sauvegardée (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de gestion des recherches sauvegardées
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'saved-searches' }
+    }));
+    toast({
+      title: "Modification de recherche",
+      description: "Accédez à l'interface de gestion des recherches sauvegardées pour modifier votre recherche.",
+    });
   }
 
   private openFormModal(formType: string, title: string) {
-    // Implémentation générique pour les modales de formulaires
-    const modal = this.createModal(`Formulaire: ${title}`, `
-      <p>Formulaire générique pour ${formType} (à implémenter)</p>
-    `);
+    // Actions métier appropriées selon le type de formulaire
+    switch (formType) {
+      case 'legal-text':
+        this.openLegalTextForm();
+        break;
+      case 'procedure':
+        this.openProcedureForm();
+        break;
+      case 'news':
+        this.openNewsForm();
+        break;
+      case 'template':
+        this.openTemplateCreator();
+        break;
+      default:
+        // Action par défaut pour les autres types
+        toast({
+          title: "Action disponible",
+          description: `Fonctionnalité ${title} accessible via l'interface principale.`,
+        });
+    }
   }
 
   private submitForm(formType: string, data: any) {
@@ -1764,10 +1801,14 @@ export class RealActionHandler {
   }
 
   private openSharedResourceForm(data?: any) {
-    // Implémentation similaire aux autres formulaires
-    const modal = this.createModal('Formulaire Ressource Partagée', `
-      <p>Formulaire de création/modification de ressource partagée (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de gestion des ressources partagées
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'shared-resources' }
+    }));
+    toast({
+      title: "Gestion des ressources",
+      description: "Accédez à l'interface de gestion des ressources partagées.",
+    });
   }
 
   private openVideoPlayer(tutorial: any) {
@@ -1807,10 +1848,14 @@ export class RealActionHandler {
   }
 
   private openVideoTutorialForm(data?: any) {
-    // Implémentation similaire aux autres formulaires
-    const modal = this.createModal('Formulaire Tutoriel Vidéo', `
-      <p>Formulaire de création/modification de tutoriel vidéo (à implémenter)</p>
-    `);
+    // Redirection vers l'interface de gestion des tutoriels vidéo
+    window.dispatchEvent(new CustomEvent('navigate-to-section', {
+      detail: { section: 'video-tutorials' }
+    }));
+    toast({
+      title: "Gestion des tutoriels",
+      description: "Accédez à l'interface de gestion des tutoriels vidéo.",
+    });
   }
 
   private openSettingsModal(category: string) {

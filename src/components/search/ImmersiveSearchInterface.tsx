@@ -18,13 +18,10 @@ import {
   Users,
   ClipboardList
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
 
 export function ImmersiveSearchInterface() {
   // États pour les modales métier
-  const [showSearchResultsModal, setShowSearchResultsModal] = useState(false);
   const [showBrowseModal, setShowBrowseModal] = useState(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [browseType, setBrowseType] = useState<string>('');
   const [browseTitle, setBrowseTitle] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -32,37 +29,22 @@ export function ImmersiveSearchInterface() {
   // Fonction de recherche sémantique
   const handleSemanticSearch = (query: string) => {
     // Simulation d'une vraie recherche sémantique
-    const results = [
-      { id: 1, title: 'Document sémantique 1', relevance: 0.95 },
-      { id: 2, title: 'Document sémantique 2', relevance: 0.87 },
-      { id: 3, title: 'Document sémantique 3', relevance: 0.82 }
-    ];
-    setSearchResults(results);
-    setShowSearchResultsModal(true);
+    console.log('Recherche sémantique:', query);
+    // Ici on pourrait implémenter une vraie recherche
   };
 
   // Fonction de recherche par mots-clés
   const handleKeywordSearch = (query: string) => {
     // Simulation d'une vraie recherche par mots-clés
-    const results = [
-      { id: 1, title: 'Document mots-clés 1', relevance: 0.92 },
-      { id: 2, title: 'Document mots-clés 2', relevance: 0.85 },
-      { id: 3, title: 'Document mots-clés 3', relevance: 0.78 }
-    ];
-    setSearchResults(results);
-    setShowSearchResultsModal(true);
+    console.log('Recherche mots-clés:', query);
+    // Ici on pourrait implémenter une vraie recherche
   };
 
   // Fonction de recherche IA avancée
   const handleAISearch = (query: string) => {
     // Simulation d'une vraie recherche IA
-    const results = [
-      { id: 1, title: 'Document IA 1', relevance: 0.98 },
-      { id: 2, title: 'Document IA 2', relevance: 0.94 },
-      { id: 3, title: 'Document IA 3', relevance: 0.89 }
-    ];
-    setSearchResults(results);
-    setShowSearchResultsModal(true);
+    console.log('Recherche IA:', query);
+    // Ici on pourrait implémenter une vraie recherche
   };
 
   // Fonction de navigation par type
