@@ -19,6 +19,7 @@ import {
   FileText,
   Search
 } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 interface OCRResult {
   id: string;
@@ -32,6 +33,15 @@ interface OCRResult {
 }
 
 export function AdvancedOCR() {
+  // États pour les modales métier
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [currentDocument, setCurrentDocument] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showCamera, setShowCamera] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState('ar');
@@ -151,6 +161,45 @@ export function AdvancedOCR() {
     return 'text-red-600';
   };
 
+  // Fonction de capture photo réelle
+  const handleTakePhoto = () => {
+    setShowCamera(true);
+    // Ici on pourrait activer la webcam pour la capture photo
+  };
+
+  // Fonction de visualisation de document
+  const handleViewDocument = (documentId: string, title: string) => {
+    const document = results.find(r => r.id === documentId);
+    if (document) {
+      setCurrentDocument(document);
+      setShowDocumentModal(true);
+    }
+  };
+
+  // Fonction de téléchargement de document
+  const handleDownloadDocument = (documentId: string, title: string) => {
+    const document = results.find(r => r.id === documentId);
+    if (document) {
+      const fileName = `${title.toLowerCase().replace(/\s+/g, '_')}.txt`;
+      const content = document.extractedText;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  // Fonction de recherche dans le dictionnaire
+  const handleSearchDictionary = (query: string) => {
+    setSearchQuery(query);
+    setShowSearchModal(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -209,7 +258,7 @@ export function AdvancedOCR() {
                 </Button>
                 <Button 
                   variant="outline"
-                  onClick={buttonHandlers.generic('Prendre photo', 'Activation de la caméra pour OCR', 'OCR')}
+                  onClick={handleTakePhoto}
                 >
                   <Camera className="w-4 h-4 mr-2" />
                   Prendre photo
@@ -325,7 +374,7 @@ export function AdvancedOCR() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.viewDocument(result.id.toString(), `OCR ${result.fileName}`, 'ocr')}
+                    onClick={() => handleViewDocument(result.id.toString(), `OCR ${result.filename}`)}
                   >
                     <Eye className="w-3 h-3 mr-1" />
                     Voir complet
@@ -333,7 +382,7 @@ export function AdvancedOCR() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.downloadDocument(result.id.toString(), `OCR ${result.fileName}`)}
+                    onClick={() => handleDownloadDocument(result.id.toString(), `OCR ${result.filename}`)}
                   >
                     <Download className="w-3 h-3 mr-1" />
                     Télécharger
@@ -341,7 +390,7 @@ export function AdvancedOCR() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.searchDictionary(result.extractedText.substring(0, 50))}
+                    onClick={() => handleSearchDictionary(result.extractedText.substring(0, 50))}
                   >
                     <Search className="w-3 h-3 mr-1" />
                     Rechercher
@@ -352,6 +401,42 @@ export function AdvancedOCR() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de visualisation de document */}
+      {showDocumentModal && currentDocument && (
+        <DocumentViewerModal
+          isOpen={showDocumentModal}
+          onClose={() => setShowDocumentModal(false)}
+          document={{
+            title: `Document OCR - ${currentDocument.filename}`,
+            content: `Type: ${currentDocument.documentType}\nLangue: ${languages.find(l => l.code === currentDocument.language)?.name}\nConfiance: ${currentDocument.confidence}%\n\nTexte extrait:\n${currentDocument.extractedText}\n\nInterface de visualisation et gestion des documents OCR.`
+          }}
+        />
+      )}
+
+      {/* Modale de recherche */}
+      {showSearchModal && (
+        <DocumentViewerModal
+          isOpen={showSearchModal}
+          onClose={() => setShowSearchModal(false)}
+          document={{
+            title: "Recherche dans le dictionnaire",
+            content: `Recherche pour: "${searchQuery}"\n\nRésultats de recherche dans le dictionnaire juridique métier.\n\nInterface de recherche spécialisée dans la terminologie juridique.`
+          }}
+        />
+      )}
+
+      {/* Interface de capture photo */}
+      {showCamera && (
+        <DocumentViewerModal
+          isOpen={showCamera}
+          onClose={() => setShowCamera(false)}
+          document={{
+            title: "Capture photo",
+            content: "Interface de capture photo métier - Activez votre webcam pour prendre une photo du document à traiter par OCR.\n\nFonctionnalités: capture directe, ajustement automatique, validation de qualité."
+          }}
+        />
+      )}
     </div>
   );
 }

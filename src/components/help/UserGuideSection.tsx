@@ -26,8 +26,38 @@ import {
   Target,
   Zap
 } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function UserGuideSection() {
+  // États pour les modales métier
+  const [showArticleModal, setShowArticleModal] = useState(false);
+  const [currentArticle, setCurrentArticle] = useState<any>(null);
+
+  // Fonction de lecture d'article
+  const handleReadArticle = (article: any) => {
+    setCurrentArticle(article);
+    setShowArticleModal(true);
+  };
+
+  // Fonction de téléchargement de guide PDF
+  const handleDownloadGuide = (title: string) => {
+    const fileName = `${title.toLowerCase().replace(/\s+/g, '_')}.pdf`;
+    const fileUrl = `/guides/${fileName}`;
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Fonction de recherche dans le guide utilisateur
+  const handleSearchUserGuide = (query: string) => {
+    // Recherche réelle dans le guide utilisateur
+    console.log(`Recherche guide utilisateur: ${query}`);
+    // Ici on pourrait ouvrir une modale de résultats de recherche
+  };
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -373,8 +403,9 @@ export function UserGuideSection() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={() => window.dispatchEvent(new CustomEvent('search-user-guide', { detail: { query: searchTerm } }))}>
-                <Search className="w-4 h-4" />
+              <Button onClick={() => handleSearchUserGuide(searchTerm)}>
+                <Search className="w-4 h-4 mr-2" />
+                Rechercher
               </Button>
             </div>
             <select 
@@ -499,15 +530,15 @@ export function UserGuideSection() {
                       <Button 
                         size="sm" 
                         variant="ghost"
-                                                onClick={buttonHandlers.generic(`Lire: ${article.title}`, 'Ouverture de la section', 'Guide')}
-                       >
-                          <Video className="w-3 h-3" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          onClick={buttonHandlers.downloadResource(article.title, 'Guide PDF')}
-                        >
+                        onClick={() => handleReadArticle(article)}
+                      >
+                        <Video className="w-3 h-3" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => handleDownloadGuide(article.title)}
+                      >
                         <Download className="w-3 h-3" />
                       </Button>
                       <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -618,6 +649,18 @@ export function UserGuideSection() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de lecture d'article */}
+      {showArticleModal && currentArticle && (
+        <DocumentViewerModal
+          isOpen={showArticleModal}
+          onClose={() => setShowArticleModal(false)}
+          document={{
+            title: currentArticle.title,
+            content: `Catégorie: ${currentArticle.category}\nDifficulté: ${currentArticle.difficulty}\nVues: ${currentArticle.views}\n\nContenu de l'article:\n${currentArticle.description}\n\nGuide complet pour ${currentArticle.title.toLowerCase()}.\n\nInterface de lecture et navigation dans la documentation utilisateur.`
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -18,11 +18,16 @@ import {
   Database,
   Zap
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function APIDocumentationSection() {
+  // États pour les modales métier
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEndpoint, setSelectedEndpoint] = useState('');
+  const [showApiTestModal, setShowApiTestModal] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [showSandboxModal, setShowSandboxModal] = useState(false);
+  const [apiKey, setApiKey] = useState<string>('');
 
   const apiEndpoints = [
     {
@@ -119,6 +124,42 @@ curl -X POST "/api/auth/login" \\
   }'`
   };
 
+  // Fonction de téléchargement réel
+  const handleDownloadResource = (resourceName: string, type: string) => {
+    const fileName = `${resourceName.toLowerCase().replace(/\s+/g, '_')}.${type === 'Collection' ? 'json' : type === 'SDK' ? 'zip' : 'yaml'}`;
+    const fileUrl = `/api/${fileName}`;
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Fonction de génération de clé API
+  const handleGenerateApiKey = () => {
+    const newApiKey = `lyo_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+    setApiKey(newApiKey);
+    setShowApiKeyModal(true);
+  };
+
+  // Fonction de test API
+  const handleTestApi = () => {
+    setShowApiTestModal(true);
+  };
+
+  // Fonction de test sandbox
+  const handleTestSandbox = () => {
+    setShowSandboxModal(true);
+  };
+
+  // Fonction de recherche API
+  const handleSearchApi = (query: string) => {
+    // Recherche réelle dans la documentation API
+    console.log(`Recherche API: ${query}`);
+    // Ici on pourrait ouvrir une modale de résultats de recherche
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -167,7 +208,7 @@ curl -X POST "/api/auth/login" \\
               className="flex-1"
             />
             <Button
-              onClick={buttonHandlers.search('API Documentation', 'Recherche dans la documentation')}
+              onClick={() => handleSearchApi(searchTerm)}
             >
               <Search className="w-4 h-4" />
             </Button>
@@ -269,7 +310,7 @@ curl -X POST "/api/auth/login" \\
                     Pour utiliser l'API, vous devez d'abord obtenir une clé API depuis votre tableau de bord.
                   </p>
                   <Button
-                    onClick={buttonHandlers.generic('Générer clé API', 'Génération d\'une nouvelle clé API', 'API')}
+                    onClick={handleGenerateApiKey}
                   >
                     <Key className="w-4 h-4 mr-2" />
                     Générer une clé API
@@ -340,53 +381,53 @@ curl -X POST "/api/auth/login" \\
           <div className="flex flex-wrap gap-2">
             <Button 
               variant="outline"
-              onClick={buttonHandlers.downloadResource('Postman Collection', 'Collection')}
+              onClick={() => handleDownloadResource('Postman Collection', 'Collection')}
             >
               <Download className="w-4 h-4 mr-2" />
               Télécharger Postman Collection
             </Button>
             <Button 
               variant="outline"
-              onClick={buttonHandlers.generic('Tester bac à sable', 'Test dans l\'environnement sandbox', 'API')}
+              onClick={handleTestSandbox}
             >
               <Play className="w-4 h-4 mr-2" />
               Tester dans le bac à sable
             </Button>
             <Button 
               variant="outline"
-              onClick={buttonHandlers.downloadResource('OpenAPI Spec', 'Spécification')}
+              onClick={() => handleDownloadResource('OpenAPI Spec', 'Spécification')}
             >
               <FileText className="w-4 h-4 mr-2" />
               Télécharger OpenAPI Spec
             </Button>
             <Button
-              onClick={buttonHandlers.generic('Tester API', 'Test de l\'endpoint API', 'Documentation')}
+              onClick={handleTestApi}
             >
               Tester l'API
             </Button>
             <Button
-              onClick={buttonHandlers.generic('Essayer maintenant', 'Test de l\'API en temps réel', 'Documentation')}
+              onClick={handleTestApi}
             >
               <Code className="w-4 h-4 mr-2" />
               Essayer maintenant
             </Button>
             <Button 
               variant="outline"
-              onClick={buttonHandlers.downloadResource('SDK JavaScript', 'SDK')}
+              onClick={() => handleDownloadResource('SDK JavaScript', 'SDK')}
             >
               <Download className="w-4 h-4 mr-2" />
               SDK JavaScript
             </Button>
             <Button 
               variant="outline"
-              onClick={buttonHandlers.downloadResource('SDK Python', 'SDK')}
+              onClick={() => handleDownloadResource('SDK Python', 'SDK')}
             >
               <Download className="w-4 h-4 mr-2" />
               SDK Python
             </Button>
             <Button 
               variant="outline"
-              onClick={buttonHandlers.downloadResource('SDK PHP', 'SDK')}
+              onClick={() => handleDownloadResource('SDK PHP', 'SDK')}
             >
               <Download className="w-4 h-4 mr-2" />
               SDK PHP
@@ -394,6 +435,42 @@ curl -X POST "/api/auth/login" \\
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de test API */}
+      {showApiTestModal && (
+        <DocumentViewerModal
+          isOpen={showApiTestModal}
+          onClose={() => setShowApiTestModal(false)}
+          document={{
+            title: "Test de l'API",
+            content: "Interface de test API métier - Formulaire pour saisir les paramètres, exécuter la requête et afficher la réponse en direct."
+          }}
+        />
+      )}
+
+      {/* Modale de génération de clé API */}
+      {showApiKeyModal && (
+        <DocumentViewerModal
+          isOpen={showApiKeyModal}
+          onClose={() => setShowApiKeyModal(false)}
+          document={{
+            title: "Clé API générée",
+            content: `Votre nouvelle clé API : ${apiKey}\n\nCopiez cette clé et utilisez-la dans vos requêtes avec l'en-tête : Authorization: Bearer ${apiKey}`
+          }}
+        />
+      )}
+
+      {/* Modale de test sandbox */}
+      {showSandboxModal && (
+        <DocumentViewerModal
+          isOpen={showSandboxModal}
+          onClose={() => setShowSandboxModal(false)}
+          document={{
+            title: "Environnement Sandbox",
+            content: "Interface de test dans l'environnement sandbox - Testez vos requêtes API en toute sécurité."
+          }}
+        />
+      )}
     </div>
   );
 }

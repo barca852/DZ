@@ -42,7 +42,10 @@ interface Agent {
 }
 
 export function AutonomousAgent() {
-  const [isActive, setIsActive] = useState(false);
+  // État pour l'agent autonome
+  const [isAgentActive, setIsAgentActive] = useState(false);
+  const [agentStatus, setAgentStatus] = useState('inactive');
+
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
@@ -124,8 +127,18 @@ export function AutonomousAgent() {
     }
   ];
 
+  // Fonction de toggle de l'agent autonome
   const handleToggleAgent = () => {
-    setIsActive(!isActive);
+    setIsAgentActive(!isAgentActive);
+    setAgentStatus(isAgentActive ? 'inactive' : 'active');
+    
+    if (!isAgentActive) {
+      // Activation de l'agent autonome
+      console.log('Agent autonome activé - surveillance et actions automatiques en cours');
+    } else {
+      // Désactivation de l'agent autonome
+      console.log('Agent autonome désactivé');
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -154,8 +167,8 @@ export function AutonomousAgent() {
           <CardTitle className="flex items-center gap-2">
             <Bot className="w-6 h-6 text-purple-600" />
             IA Agentique Autonome
-            <Badge className={`ml-2 ${isActive ? 'bg-green-500' : 'bg-gray-500'}`}>
-              {isActive ? 'Actif' : 'Inactif'}
+            <Badge className={`ml-2 ${isAgentActive ? 'bg-green-500' : 'bg-gray-500'}`}>
+              {isAgentActive ? 'Actif' : 'Inactif'}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -163,29 +176,22 @@ export function AutonomousAgent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
-                size="lg"
                 onClick={handleToggleAgent}
-                className={`${isActive ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+                className={`${
+                  isAgentActive 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : 'bg-gray-600 hover:bg-gray-700'
+                }`}
               >
-                {isActive ? (
-                  <>
-                    <Pause className="w-4 h-4 mr-2" />
-                    Arrêter
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-4 h-4 mr-2" />
-                    Démarrer
-                  </>
-                )}
+                {isAgentActive ? 'Désactiver' : 'Activer'} l'agent
               </Button>
               
               <div className="flex flex-col">
                 <span className="text-sm font-medium">
-                  {isActive ? 'Agents en fonctionnement' : 'Agents en veille'}
+                  {isAgentActive ? 'Agents en fonctionnement' : 'Agents en veille'}
                 </span>
                 <span className="text-xs text-gray-500">
-                  {isActive ? `${agents.filter(a => a.status === 'active' || a.status === 'busy').length} agents actifs` : 'Tous les agents arrêtés'}
+                  {isAgentActive ? `${agents.filter(a => a.status === 'active' || a.status === 'busy').length} agents actifs` : 'Tous les agents arrêtés'}
                 </span>
               </div>
             </div>

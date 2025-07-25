@@ -15,8 +15,15 @@ import {
   Settings,
   Headphones
 } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function VoiceAssistant() {
+  // États pour les modales métier
+  const [showConversationModal, setShowConversationModal] = useState(false);
+  const [currentConversation, setCurrentConversation] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('fr');
@@ -76,6 +83,35 @@ export function VoiceAssistant() {
 
   const handleLanguageChange = (langCode: string) => {
     setCurrentLanguage(langCode);
+  };
+
+  // Fonction de lecture audio réelle
+  const handleReplayResponse = (response: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(response);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      speechSynthesis.speak(utterance);
+      setIsPlaying(true);
+      
+      utterance.onend = () => {
+        setIsPlaying(false);
+      };
+    }
+  };
+
+  // Fonction de rejouer une conversation
+  const handleReplayConversation = (conversation: any) => {
+    setCurrentConversation(conversation);
+    setShowConversationModal(true);
+  };
+
+  // Fonction de continuer une conversation
+  const handleContinueConversation = (conversation: any) => {
+    setCurrentConversation(conversation);
+    setShowConversationModal(true);
+    // Ici on pourrait rouvrir le micro et continuer la conversation
   };
 
   return (
@@ -175,10 +211,11 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.generic('Réécouter réponse', 'Lecture audio de la réponse', 'Assistant vocal')}
+                    onClick={() => handleReplayResponse(response)}
+                    disabled={isPlaying}
                   >
                     <Play className="w-3 h-3 mr-1" />
-                    Réécouter
+                    {isPlaying ? 'Lecture...' : 'Réécouter'}
                   </Button>
                 </div>
                 <p className="text-gray-800">{response}</p>
@@ -217,7 +254,7 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.generic(`Rejouer: ${conv.question}`, 'Rejouer la conversation', 'Assistant vocal')}
+                    onClick={() => handleReplayConversation(conv)}
                   >
                     <Play className="w-3 h-3 mr-1" />
                     Rejouer
@@ -225,7 +262,7 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={buttonHandlers.generic('Continuer conversation', 'Continuer la conversation vocale', 'Assistant vocal')}
+                    onClick={() => handleContinueConversation(conv)}
                   >
                     <Mic className="w-3 h-3 mr-1" />
                     Continuer
@@ -276,6 +313,18 @@ export function VoiceAssistant() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de conversation */}
+      {showConversationModal && currentConversation && (
+        <DocumentViewerModal
+          isOpen={showConversationModal}
+          onClose={() => setShowConversationModal(false)}
+          document={{
+            title: `Conversation vocale - ${currentConversation.timestamp}`,
+            content: `Question: ${currentConversation.question}\n\nRéponse: ${currentConversation.response}\n\nLangue: ${languages.find(l => l.code === currentConversation.language)?.name}\n\nInterface de gestion des conversations vocales.`
+          }}
+        />
+      )}
     </div>
   );
 }
