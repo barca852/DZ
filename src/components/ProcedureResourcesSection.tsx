@@ -1,41 +1,50 @@
 
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Download, FileText, BookOpen, ExternalLink, Calendar } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 import { SectionHeader } from './common/SectionHeader';
 
 export function ProcedureResourcesSection() {
-  const handleConsultGuide = (guideTitle: string) => {
-    console.log(`Consulting guide: ${guideTitle}`);
-    // Dispatch event to open guide viewer modal
-    window.dispatchEvent(new CustomEvent('show-guide-viewer', { 
-      detail: { title: guideTitle }
-    }));
+  // État pour la modale de visualisation de guide
+  const [showGuideModal, setShowGuideModal] = useState(false);
+  const [guideTitle, setGuideTitle] = useState<string|null>(null);
+
+  // Ouvre la modale de visualisation de guide
+  const handleConsultGuide = (title: string) => {
+    setGuideTitle(title);
+    setShowGuideModal(true);
   };
 
+  // Déclenche un vrai téléchargement ZIP (fichier statique ou généré dynamiquement)
   const handleDownloadForms = (categoryTitle: string) => {
-    console.log(`Downloading forms for: ${categoryTitle}`);
-    // Simulate download process
-    const downloadLink = document.createElement('a');
-    downloadLink.href = '#'; // In real app, this would be the actual file URL
-    downloadLink.download = `${categoryTitle.toLowerCase().replace(/\s+/g, '_')}_forms.zip`;
-    
-    // Show download notification
-    window.dispatchEvent(new CustomEvent('show-notification', { 
-      detail: { 
-        type: 'success',
-        message: `Téléchargement des formulaires "${categoryTitle}" en cours...`
-      }
-    }));
-    
-    // In a real app, you would trigger the actual download here
-    // downloadLink.click();
+    const fileName = `${categoryTitle.toLowerCase().replace(/\s+/g, '_')}_forms.zip`;
+    // Pour la démo, on utilise un fichier statique dans public/forms/
+    const fileUrl = `/forms/${fileName}`;
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div className="space-y-6">
+      {/* Modale de visualisation de guide */}
+      {showGuideModal && guideTitle && (
+        <DocumentViewerModal
+          isOpen={showGuideModal}
+          onClose={() => setShowGuideModal(false)}
+          document={{
+            title: guideTitle,
+            content: `Ici s'affiche le guide pratique : ${guideTitle}. (À remplacer par le vrai contenu métier du guide)`
+          }}
+        />
+      )}
       <Tabs defaultValue="guides" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="guides" className="flex items-center gap-2">
