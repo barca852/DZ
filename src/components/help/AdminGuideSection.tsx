@@ -35,13 +35,24 @@ import {
   Rocket,
   Terminal,
   Package,
-  Cloud
+  Cloud,
+  Save,
+  BarChart3
 } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function AdminGuideSection() {
   console.log('AdminGuideSection rendering...');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedModule, setSelectedModule] = useState('all');
+
+  // États pour les modales métier
+  const [showUserManagementModal, setShowUserManagementModal] = useState(false);
+  const [showBackupModal, setShowBackupModal] = useState(false);
+  const [showReportsModal, setShowReportsModal] = useState(false);
+  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState<any>(null);
 
   const adminModules = [
     {
@@ -384,6 +395,44 @@ export function AdminGuideSection() {
     }
   };
 
+  // Fonction de téléchargement de guide
+  const handleDownloadGuide = (guideName: string) => {
+    const fileName = `${guideName.toLowerCase().replace(/\s+/g, '_')}.pdf`;
+    const fileUrl = `/guides/${fileName}`;
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Fonction de gestion des utilisateurs
+  const handleUserManagement = () => {
+    setShowUserManagementModal(true);
+  };
+
+  // Fonction de sauvegarde manuelle
+  const handleManualBackup = () => {
+    setShowBackupModal(true);
+  };
+
+  // Fonction de rapports système
+  const handleSystemReports = () => {
+    setShowReportsModal(true);
+  };
+
+  // Fonction de configuration
+  const handleConfiguration = () => {
+    setShowConfigModal(true);
+  };
+
+  // Fonction de lecture vidéo
+  const handlePlayVideo = (video: any) => {
+    setCurrentVideo(video);
+    setShowVideoModal(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -537,12 +586,7 @@ export function AdminGuideSection() {
                           <Button 
                             size="sm" 
                             variant="ghost"
-                            onClick={() => {
-                              console.log('Playing video tutorial');
-                              window.dispatchEvent(new CustomEvent('show-video-player', { 
-                                detail: { videoId: article.id }
-                              }));
-                            }}
+                            onClick={() => handlePlayVideo(article)}
                           >
                             <Play className="w-3 h-3" />
                           </Button>
@@ -1020,12 +1064,7 @@ export function AdminGuideSection() {
                   <Button 
                     size="sm" 
                     className="mt-3 w-full"
-                    onClick={() => {
-                      console.log('Downloading Vercel guide');
-                      window.dispatchEvent(new CustomEvent('download-guide', { 
-                        detail: { guide: 'vercel' }
-                      }));
-                    }}
+                    onClick={() => handleDownloadGuide('Vercel Guide')}
                   >
                     <Download className="w-3 h-3 mr-1" />
                     Guide Vercel
@@ -1093,7 +1132,7 @@ export function AdminGuideSection() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Button 
               className="h-auto p-4 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Gestion utilisateurs', 'Ouverture de la gestion des utilisateurs', 'Administration')}
+              onClick={handleUserManagement}
             >
               <Users className="w-6 h-6" />
               <span>Gestion utilisateurs</span>
@@ -1101,23 +1140,23 @@ export function AdminGuideSection() {
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Sauvegarde manuelle', 'Lancement de la sauvegarde manuelle', 'Administration')}
+              onClick={handleManualBackup}
             >
-              <Database className="w-6 h-6" />
+              <Save className="w-6 h-6" />
               <span>Sauvegarde manuelle</span>
             </Button>
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Rapports système', 'Affichage des rapports système', 'Administration')}
+              onClick={handleSystemReports}
             >
-              <BarChart className="w-6 h-6" />
+              <BarChart3 className="w-6 h-6" />
               <span>Rapports système</span>
             </Button>
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Configuration', 'Ouverture de la configuration', 'Administration')}
+              onClick={handleConfiguration}
             >
               <Settings className="w-6 h-6" />
               <span>Configuration</span>
@@ -1131,6 +1170,66 @@ export function AdminGuideSection() {
         <h2 className="text-2xl font-bold mb-4">Démonstration des Actions</h2>
         <ActionButtonsDemo />
       </div>
+
+      {/* Modale de gestion des utilisateurs */}
+      {showUserManagementModal && (
+        <DocumentViewerModal
+          isOpen={showUserManagementModal}
+          onClose={() => setShowUserManagementModal(false)}
+          document={{
+            title: "Gestion des utilisateurs",
+            content: "Interface de gestion des utilisateurs - Création, modification, suppression et attribution des rôles et permissions."
+          }}
+        />
+      )}
+
+      {/* Modale de sauvegarde */}
+      {showBackupModal && (
+        <DocumentViewerModal
+          isOpen={showBackupModal}
+          onClose={() => setShowBackupModal(false)}
+          document={{
+            title: "Sauvegarde manuelle",
+            content: "Interface de sauvegarde manuelle - Configuration des sauvegardes, planification et restauration des données."
+          }}
+        />
+      )}
+
+      {/* Modale de rapports système */}
+      {showReportsModal && (
+        <DocumentViewerModal
+          isOpen={showReportsModal}
+          onClose={() => setShowReportsModal(false)}
+          document={{
+            title: "Rapports système",
+            content: "Interface des rapports système - Performance, utilisation, logs et métriques de la plateforme."
+          }}
+        />
+      )}
+
+      {/* Modale de configuration */}
+      {showConfigModal && (
+        <DocumentViewerModal
+          isOpen={showConfigModal}
+          onClose={() => setShowConfigModal(false)}
+          document={{
+            title: "Configuration système",
+            content: "Interface de configuration - Paramètres système, sécurité, intégrations et personnalisation."
+          }}
+        />
+      )}
+
+      {/* Modale de lecture vidéo */}
+      {showVideoModal && currentVideo && (
+        <DocumentViewerModal
+          isOpen={showVideoModal}
+          onClose={() => setShowVideoModal(false)}
+          document={{
+            title: `Tutoriel: ${currentVideo.title}`,
+            content: `Lecture du tutoriel vidéo: ${currentVideo.title}\n\nDurée: ${currentVideo.duration}\n\nInterface de lecture vidéo avec contrôles et navigation.`
+          }}
+        />
+      )}
     </div>
   );
 }

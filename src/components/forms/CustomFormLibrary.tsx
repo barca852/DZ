@@ -15,9 +15,12 @@ import {
   Download,
   Upload,
   Star,
-  Calendar
+  Calendar,
+  MoreHorizontal,
+  BarChart3,
+  HelpCircle
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 interface CustomForm {
   id: string;
@@ -33,8 +36,18 @@ interface CustomForm {
 }
 
 export function CustomFormLibrary() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  // États pour les modales métier
+  const [showCreateFormModal, setShowCreateFormModal] = useState(false);
+  const [showFiltersModal, setShowFiltersModal] = useState(false);
+  const [showViewFormModal, setShowViewFormModal] = useState(false);
+  const [showEditFormModal, setShowEditFormModal] = useState(false);
+  const [showDuplicateFormModal, setShowDuplicateFormModal] = useState(false);
+  const [showDeleteFormModal, setShowDeleteFormModal] = useState(false);
+  const [showPopularTemplatesModal, setShowPopularTemplatesModal] = useState(false);
+  const [showImportFormModal, setShowImportFormModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [currentForm, setCurrentForm] = useState<any>(null);
 
   const customForms: CustomForm[] = [
     {
@@ -93,6 +106,75 @@ export function CustomFormLibrary() {
     }
   };
 
+  // Fonction de création de formulaire
+  const handleCreateForm = () => {
+    setShowCreateFormModal(true);
+  };
+
+  // Fonction de filtres avancés
+  const handleAdvancedFilters = () => {
+    setShowFiltersModal(true);
+  };
+
+  // Fonction de visualisation de formulaire
+  const handleViewForm = (form: any) => {
+    setCurrentForm(form);
+    setShowViewFormModal(true);
+  };
+
+  // Fonction de modification de formulaire
+  const handleEditForm = (form: any) => {
+    setCurrentForm(form);
+    setShowEditFormModal(true);
+  };
+
+  // Fonction de duplication de formulaire
+  const handleDuplicateForm = (form: any) => {
+    setCurrentForm(form);
+    setShowDuplicateFormModal(true);
+  };
+
+  // Fonction de téléchargement de formulaire
+  const handleDownloadForm = (formId: string, formTitle: string) => {
+    const fileName = `${formTitle.toLowerCase().replace(/\s+/g, '_')}.json`;
+    const content = JSON.stringify({ id: formId, title: formTitle, type: 'formulaire' }, null, 2);
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Fonction de suppression de formulaire
+  const handleDeleteForm = (form: any) => {
+    setCurrentForm(form);
+    setShowDeleteFormModal(true);
+  };
+
+  // Fonction de modèles populaires
+  const handlePopularTemplates = () => {
+    setShowPopularTemplatesModal(true);
+  };
+
+  // Fonction d'import de formulaire
+  const handleImportForm = () => {
+    setShowImportFormModal(true);
+  };
+
+  // Fonction de statistiques
+  const handleStats = () => {
+    setShowStatsModal(true);
+  };
+
+  // Fonction d'aide formulaires
+  const handleHelp = () => {
+    setShowHelpModal(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -105,7 +187,7 @@ export function CustomFormLibrary() {
         </div>
         <Button 
           className="gap-2 bg-blue-600 hover:bg-blue-700"
-          onClick={buttonHandlers.generic('Créer formulaire', 'Création d\'un nouveau formulaire', 'Formulaires')}
+          onClick={handleCreateForm}
         >
           <Plus className="w-4 h-4" />
           Créer un formulaire
@@ -136,7 +218,7 @@ export function CustomFormLibrary() {
         </select>
         <Button 
           variant="outline"
-          onClick={buttonHandlers.generic('Filtres avancés', 'Ouverture des filtres avancés', 'Formulaires')}
+          onClick={handleAdvancedFilters}
         >
           <Filter className="w-4 h-4" />
         </Button>
@@ -190,7 +272,7 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.viewDocument(form.id, form.title, 'formulaire')}
+                        onClick={() => handleViewForm(form)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         Voir
@@ -198,7 +280,7 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.generic(`Modifier: ${form.title}`, 'Modification du formulaire', 'Formulaires')}
+                        onClick={() => handleEditForm(form)}
                       >
                         <Edit className="w-4 h-4 mr-2" />
                         Modifier
@@ -206,7 +288,7 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.generic(`Dupliquer: ${form.title}`, 'Duplication du formulaire', 'Formulaires')}
+                        onClick={() => handleDuplicateForm(form)}
                       >
                         <Copy className="w-4 h-4 mr-2" />
                         Dupliquer
@@ -214,7 +296,7 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.downloadDocument(form.id, form.title)}
+                        onClick={() => handleDownloadForm(form.id, form.title)}
                       >
                         <Download className="w-4 h-4 mr-2" />
                         Export
@@ -225,7 +307,7 @@ export function CustomFormLibrary() {
                       variant="ghost" 
                       size="sm" 
                       className="w-full text-red-600 hover:text-red-700"
-                      onClick={buttonHandlers.generic(`Supprimer: ${form.title}`, 'Suppression du formulaire', 'Formulaires')}
+                      onClick={() => handleDeleteForm(form)}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Supprimer
@@ -263,7 +345,7 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.viewDocument(form.id, form.title, 'formulaire')}
+                        onClick={() => handleViewForm(form)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         Voir
@@ -271,17 +353,18 @@ export function CustomFormLibrary() {
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.generic(`Modifier: ${form.title}`, 'Modification du formulaire', 'Formulaires')}
+                        onClick={() => handleEditForm(form)}
                       >
                         <Edit className="w-4 h-4 mr-2" />
                         Modifier
                       </Button>
                       <Button 
-                        variant="ghost" 
+                        variant="outline" 
                         size="sm"
-                        onClick={buttonHandlers.generic(`Actions: ${form.title}`, 'Menu d\'actions', 'Formulaires')}
+                        onClick={() => handleDuplicateForm(form)}
                       >
-                        Plus
+                        <MoreHorizontal className="w-4 h-4 mr-2" />
+                        Actions
                       </Button>
                     </div>
                   </div>
@@ -302,7 +385,7 @@ export function CustomFormLibrary() {
             <Button 
               variant="outline" 
               className="h-16 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Modèles populaires', 'Consultation des modèles populaires', 'Formulaires')}
+              onClick={handlePopularTemplates}
             >
               <Star className="w-5 h-5" />
               Modèles populaires
@@ -310,30 +393,150 @@ export function CustomFormLibrary() {
             <Button 
               variant="outline" 
               className="h-16 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Importer formulaire', 'Import d\'un formulaire externe', 'Formulaires')}
+              onClick={handleImportForm}
             >
               <Upload className="w-5 h-5" />
-              Importer
+              Importer formulaire
             </Button>
             <Button 
               variant="outline" 
               className="h-16 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Statistiques', 'Affichage des statistiques', 'Formulaires')}
+              onClick={handleStats}
             >
-              <Eye className="w-5 h-5" />
+              <BarChart3 className="w-5 h-5" />
               Statistiques
             </Button>
             <Button 
               variant="outline" 
               className="h-16 flex flex-col gap-2"
-              onClick={buttonHandlers.generic('Aide formulaires', 'Guide d\'aide pour les formulaires', 'Formulaires')}
+              onClick={handleHelp}
             >
-              <Calendar className="w-5 h-5" />
+              <HelpCircle className="w-5 h-5" />
               Aide
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de création de formulaire */}
+      {showCreateFormModal && (
+        <DocumentViewerModal
+          isOpen={showCreateFormModal}
+          onClose={() => setShowCreateFormModal(false)}
+          document={{
+            title: "Créer un nouveau formulaire",
+            content: "Interface de création de formulaire - Définissez les champs, la validation et la logique métier de votre formulaire personnalisé."
+          }}
+        />
+      )}
+
+      {/* Modale de filtres avancés */}
+      {showFiltersModal && (
+        <DocumentViewerModal
+          isOpen={showFiltersModal}
+          onClose={() => setShowFiltersModal(false)}
+          document={{
+            title: "Filtres avancés",
+            content: "Interface de filtres avancés - Filtrez vos formulaires par catégorie, date, auteur, statut et autres critères."
+          }}
+        />
+      )}
+
+      {/* Modale de visualisation de formulaire */}
+      {showViewFormModal && currentForm && (
+        <DocumentViewerModal
+          isOpen={showViewFormModal}
+          onClose={() => setShowViewFormModal(false)}
+          document={{
+            title: `Formulaire: ${currentForm.title}`,
+            content: `Visualisation du formulaire: ${currentForm.title}\n\nCatégorie: ${currentForm.category}\nStatut: ${currentForm.status}\n\nInterface de visualisation complète du formulaire.`
+          }}
+        />
+      )}
+
+      {/* Modale de modification de formulaire */}
+      {showEditFormModal && currentForm && (
+        <DocumentViewerModal
+          isOpen={showEditFormModal}
+          onClose={() => setShowEditFormModal(false)}
+          document={{
+            title: `Modifier: ${currentForm.title}`,
+            content: `Interface de modification du formulaire: ${currentForm.title}\n\nÉditez les champs, la validation et la configuration du formulaire.`
+          }}
+        />
+      )}
+
+      {/* Modale de duplication de formulaire */}
+      {showDuplicateFormModal && currentForm && (
+        <DocumentViewerModal
+          isOpen={showDuplicateFormModal}
+          onClose={() => setShowDuplicateFormModal(false)}
+          document={{
+            title: `Dupliquer: ${currentForm.title}`,
+            content: `Interface de duplication du formulaire: ${currentForm.title}\n\nCréez une copie du formulaire avec un nouveau nom et des modifications.`
+          }}
+        />
+      )}
+
+      {/* Modale de suppression de formulaire */}
+      {showDeleteFormModal && currentForm && (
+        <DocumentViewerModal
+          isOpen={showDeleteFormModal}
+          onClose={() => setShowDeleteFormModal(false)}
+          document={{
+            title: `Supprimer: ${currentForm.title}`,
+            content: `Confirmation de suppression du formulaire: ${currentForm.title}\n\nÊtes-vous sûr de vouloir supprimer ce formulaire ? Cette action est irréversible.`
+          }}
+        />
+      )}
+
+      {/* Modale de modèles populaires */}
+      {showPopularTemplatesModal && (
+        <DocumentViewerModal
+          isOpen={showPopularTemplatesModal}
+          onClose={() => setShowPopularTemplatesModal(false)}
+          document={{
+            title: "Modèles populaires",
+            content: "Interface des modèles populaires - Consultez et utilisez les modèles de formulaires les plus utilisés par la communauté."
+          }}
+        />
+      )}
+
+      {/* Modale d'import de formulaire */}
+      {showImportFormModal && (
+        <DocumentViewerModal
+          isOpen={showImportFormModal}
+          onClose={() => setShowImportFormModal(false)}
+          document={{
+            title: "Importer un formulaire",
+            content: "Interface d'import de formulaire - Importez un formulaire externe depuis un fichier JSON ou depuis une URL."
+          }}
+        />
+      )}
+
+      {/* Modale de statistiques */}
+      {showStatsModal && (
+        <DocumentViewerModal
+          isOpen={showStatsModal}
+          onClose={() => setShowStatsModal(false)}
+          document={{
+            title: "Statistiques des formulaires",
+            content: "Interface des statistiques - Visualisez les métriques d'utilisation, les performances et les tendances de vos formulaires."
+          }}
+        />
+      )}
+
+      {/* Modale d'aide formulaires */}
+      {showHelpModal && (
+        <DocumentViewerModal
+          isOpen={showHelpModal}
+          onClose={() => setShowHelpModal(false)}
+          document={{
+            title: "Aide pour les formulaires",
+            content: "Guide d'aide pour les formulaires - Documentation complète sur la création, la gestion et l'utilisation des formulaires personnalisés."
+          }}
+        />
+      )}
     </div>
   );
 }

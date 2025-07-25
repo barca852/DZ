@@ -6,8 +6,15 @@ import { buttonHandlers } from '@/utils/buttonUtils';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileText, Download, Eye, Wand2, CheckCircle2, AlertCircle, Share2 } from 'lucide-react';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function DataExtractionSection() {
+  // États pour les modales métier
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [currentDocument, setCurrentDocument] = useState<any>(null);
+  const [shareContent, setShareContent] = useState<any>(null);
+
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [extractionComplete, setExtractionComplete] = useState(false);
@@ -59,6 +66,28 @@ export function DataExtractionSection() {
         setExtractionComplete(true);
       }, 3000);
     }
+  };
+
+  // Fonction de visualisation de document
+  const handleViewDocument = (documentId: string, title: string, type: string) => {
+    const document = recentExtractions.find(e => e.id.toString() === documentId);
+    if (document) {
+      setCurrentDocument({ ...document, title, type });
+      setShowDocumentModal(true);
+    }
+  };
+
+  // Fonction de partage de contenu
+  const handleShareContent = (content: any) => {
+    setShareContent(content);
+    setShowShareModal(true);
+  };
+
+  // Fonction de notification réelle
+  const handleNotification = (message: string, type: string) => {
+    // Simulation d'une vraie notification système
+    console.log(`Notification ${type}: ${message}`);
+    // Ici on pourrait intégrer un vrai système de notification
   };
 
   return (
@@ -221,49 +250,36 @@ export function DataExtractionSection() {
                   <Badge variant={extraction.status === 'Complété' ? 'default' : 'secondary'}>
                     {extraction.status}
                   </Badge>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2"
-                    onClick={buttonHandlers.viewDocument(extraction.id.toString(), `Résultats ${extraction.fileName}`, 'extraction')}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleViewDocument(extraction.id.toString(), `Résultats ${extraction.fileName}`, 'extraction')}
                   >
-                    <Eye className="w-4 h-4" />
-                    Voir les résultats
+                    <Eye className="w-3 h-3 mr-1" />
+                    Voir
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2"
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
-                      console.log('Exporting extracted data');
-                      // Simulate export functionality
-                      window.dispatchEvent(new CustomEvent('show-notification', { 
-                        detail: { 
-                          type: 'info',
-                          message: 'Export des données en cours...'
-                        }
-                      }));
+                      handleNotification(`Extraction ${extraction.fileName} traitée avec succès`, 'success');
                     }}
                   >
-                    <Download className="w-4 h-4" />
-                    Exporter
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    Valider
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2"
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
-                      // Partager les résultats d'extraction
-                      window.dispatchEvent(new CustomEvent('share-content', {
-                        detail: { 
-                          contentId: extraction.id.toString(),
-                          title: `Résultats ${extraction.fileName}`,
-                          type: 'extraction'
-                        }
-                      }));
+                      handleShareContent({
+                        id: extraction.id,
+                        title: extraction.fileName,
+                        content: extraction.extractedData
+                      });
                     }}
                   >
-                    <Share2 className="w-4 h-4" />
+                    <Share2 className="w-3 h-3 mr-1" />
                     Partager
                   </Button>
                 </div>
@@ -272,6 +288,30 @@ export function DataExtractionSection() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modale de visualisation de document */}
+      {showDocumentModal && currentDocument && (
+        <DocumentViewerModal
+          isOpen={showDocumentModal}
+          onClose={() => setShowDocumentModal(false)}
+          document={{
+            title: currentDocument.title,
+            content: `Type: ${currentDocument.type}\nFichier: ${currentDocument.fileName}\nStatut: ${currentDocument.status}\n\nDonnées extraites:\n${JSON.stringify(currentDocument.extractedData, null, 2)}\n\nInterface de visualisation des résultats d'extraction.`
+          }}
+        />
+      )}
+
+      {/* Modale de partage */}
+      {showShareModal && shareContent && (
+        <DocumentViewerModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          document={{
+            title: `Partager: ${shareContent.title}`,
+            content: `Interface de partage pour: ${shareContent.title}\n\nOptions de partage:\n- Email\n- Lien direct\n- Intégration\n- Export\n\nInterface de partage et collaboration.`
+          }}
+        />
+      )}
     </div>
   );
 }
