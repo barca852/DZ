@@ -27,6 +27,7 @@ export function ImmersiveSearchInterface() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [browseType, setBrowseType] = useState<string>('');
   const [browseTitle, setBrowseTitle] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Fonction de recherche sémantique
   const handleSemanticSearch = (query: string) => {
@@ -81,6 +82,22 @@ export function ImmersiveSearchInterface() {
         </p>
       </div>
 
+      {/* Barre de recherche principale */}
+      <div className="max-w-2xl mx-auto">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Entrez vos termes de recherche..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1"
+          />
+          <Button onClick={() => handleSemanticSearch(searchQuery)}>
+            <Search className="w-4 h-4 mr-2" />
+            Rechercher
+          </Button>
+        </div>
+      </div>
+
       {/* Search Modes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
@@ -107,15 +124,15 @@ export function ImmersiveSearchInterface() {
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader className="text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-green-600" />
+              <Search className="w-8 h-8 text-green-600" />
             </div>
-            <CardTitle className="text-green-900">Recherche par Mots-clés</CardTitle>
+            <CardTitle className="text-green-900">Recherche Mots-clés</CardTitle>
             <CardDescription>
-              Recherche précise par termes spécifiques
+              Recherche précise par termes et expressions
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Button 
+            <Button
               onClick={() => handleKeywordSearch(searchQuery || 'recherche par termes')}
               className="bg-green-600 hover:bg-green-700"
             >
@@ -127,16 +144,16 @@ export function ImmersiveSearchInterface() {
 
         <Card className="hover:shadow-lg transition-shadow cursor-pointer">
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-8 h-8 text-red-600" />
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Zap className="w-8 h-8 text-purple-600" />
             </div>
-            <CardTitle className="text-red-900">Recherche IA Avancée</CardTitle>
+            <CardTitle className="text-purple-900">IA Avancée</CardTitle>
             <CardDescription>
-              Intelligence artificielle pour des résultats optimaux
+              Recherche assistée par intelligence artificielle
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
-            <Button 
+            <Button
               onClick={() => handleAISearch(searchQuery || 'recherche intelligente')}
               className="bg-purple-600 hover:bg-purple-700"
             >
@@ -147,10 +164,16 @@ export function ImmersiveSearchInterface() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
+      {/* Navigation par type */}
       <Card>
         <CardHeader>
-          <CardTitle>Actions Rapides</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="w-5 h-5" />
+            Navigation par Type de Document
+          </CardTitle>
+          <CardDescription>
+            Accédez directement aux différents types de textes juridiques
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
@@ -178,18 +201,6 @@ export function ImmersiveSearchInterface() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Modale de résultats de recherche */}
-      {showSearchResultsModal && (
-        <DocumentViewerModal
-          isOpen={showSearchResultsModal}
-          onClose={() => setShowSearchResultsModal(false)}
-          document={{
-            title: "Résultats de recherche",
-            content: `Résultats trouvés: ${searchResults.length}\n\n${searchResults.map((result, index) => `${index + 1}. ${result.title} (pertinence: ${result.relevance})\n`).join('')}\n\nInterface de visualisation et navigation dans les résultats de recherche.`
-          }}
-        />
-      )}
 
       {/* Modale de navigation par type */}
       {showBrowseModal && (
