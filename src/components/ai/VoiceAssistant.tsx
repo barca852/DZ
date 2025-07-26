@@ -2,18 +2,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { buttonHandlers } from '@/utils/buttonUtils';
 import { Badge } from '@/components/ui/badge';
 import { 
   Mic, 
   MicOff, 
+  Play, 
+  Pause, 
   Volume2, 
   VolumeX, 
-  Languages, 
-  Play, 
-  Pause,
-  Settings,
-  Headphones
+  Settings, 
+  Headphones,
+  MessageSquare,
+  User,
+  Bot,
+  Clock,
+  Star
 } from 'lucide-react';
 import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 

@@ -34,7 +34,7 @@ export function TabFormField({
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+    // Suppression de preventDefault pour éviter de bloquer la navigation
     onSearch?.(searchQuery);
   };
 
