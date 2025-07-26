@@ -1,30 +1,23 @@
 
-import React, { useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb } from 'lucide-react';
+import React from 'react';
+// import { TabFormField } from '@/components/common/TabFormField';
+import { EnhancedContextualRecommendations } from './EnhancedContextualRecommendations';
 
 export function RecommendationsTab() {
-  // S'assurer que le composant se monte correctement
-  useEffect(() => {
-    console.log('RecommendationsTab mounted');
-    return () => {
-      console.log('RecommendationsTab unmounted');
-    };
-  }, []);
-
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lightbulb className="w-6 h-6 text-green-600" />
-            Recommandations - Test de Navigation
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>Test de navigation - Cliquez sur Accueil pour tester</p>
-        </CardContent>
-      </Card>
+      {/* TabFormField temporairement supprimé pour test */}
+      {/* <TabFormField
+        placeholder="Explorer les recommandations contextuelles..."
+        onSearch={(query) => console.log('Recherche recommandations:', query)}
+        onAdd={() => console.log('Nouvelle recommandation')}
+        onFilter={() => console.log('Filtrer recommandations')}
+        onSort={() => console.log('Trier recommandations')}
+        onExport={() => console.log('Exporter recommandations')}
+        onRefresh={() => console.log('Actualiser recommandations')}
+        showActions={true}
+      /> */}
+      <EnhancedContextualRecommendations />
     </div>
   );
 }

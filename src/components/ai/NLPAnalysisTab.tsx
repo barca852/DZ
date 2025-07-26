@@ -1,30 +1,42 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
+// import { TabFormField } from '@/components/common/TabFormField';
+import { SpecializedNLP } from './SpecializedNLP';
+import { AICapabilitiesGrid } from './AICapabilitiesGrid';
 
 export function NLPAnalysisTab() {
-  // S'assurer que le composant se monte correctement
-  useEffect(() => {
-    console.log('NLPAnalysisTab mounted');
-    return () => {
-      console.log('NLPAnalysisTab unmounted');
-    };
-  }, []);
-
   return (
     <div className="space-y-6">
-      <Card>
+      {/* TabFormField temporairement supprimé pour test */}
+      {/* <TabFormField
+        placeholder="Analyser un texte avec NLP juridique spécialisé..."
+        onSearch={(query) => console.log('Analyse NLP:', query)}
+        onAdd={() => console.log('Nouvelle analyse NLP')}
+        onFilter={() => console.log('Filtrer analyses NLP')}
+        onSort={() => console.log('Trier analyses NLP')}
+        onExport={() => console.log('Exporter analyse NLP')}
+        onRefresh={() => console.log('Actualiser NLP')}
+        showActions={true}
+      /> */}
+
+      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-green-50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-6 h-6 text-blue-600" />
-            NLP Avancé - Test de Navigation
+            Traitement du Langage Naturel Juridique
           </CardTitle>
+          <p className="text-gray-600">
+            Traitement du langage naturel spécialisé pour l'analyse automatique de textes juridiques
+          </p>
         </CardHeader>
         <CardContent>
-          <p>Test de navigation - Cliquez sur Accueil pour tester</p>
+          <AICapabilitiesGrid type="nlp" />
         </CardContent>
       </Card>
+
+      <SpecializedNLP />
     </div>
   );
 }

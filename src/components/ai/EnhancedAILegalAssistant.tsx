@@ -18,14 +18,7 @@ export function EnhancedAILegalAssistant() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Gestion du changement d'onglet pour s'assurer que la navigation fonctionne
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    // Forcer un re-render pour s'assurer que les composants se montent correctement
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100);
-  };
+
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -36,7 +29,7 @@ export function EnhancedAILegalAssistant() {
         iconColor="text-green-600"
       />
 
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="conversation">Assistant IA</TabsTrigger>
           <TabsTrigger value="voice-assistant">Assistant Vocal</TabsTrigger>
