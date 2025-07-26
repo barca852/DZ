@@ -1,29 +1,25 @@
 
 import React from 'react';
-// import { TabFormField } from '@/components/common/TabFormField';
-// import { EnhancedContextualRecommendations } from './EnhancedContextualRecommendations';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Lightbulb } from 'lucide-react';
 
 export function RecommendationsTab() {
   return (
     <div className="space-y-6">
-      {/* TabFormField temporairement supprimé pour test */}
-      {/* <TabFormField
-        placeholder="Explorer les recommandations contextuelles..."
-        onSearch={(query) => console.log('Recherche recommandations:', query)}
-        onAdd={() => console.log('Nouvelle recommandation')}
-        onFilter={() => console.log('Filtrer recommandations')}
-        onSort={() => console.log('Trier recommandations')}
-        onExport={() => console.log('Exporter recommandations')}
-        onRefresh={() => console.log('Actualiser recommandations')}
-        showActions={true}
-      /> */}
-      
-      {/* EnhancedContextualRecommendations temporairement supprimé pour test */}
-      {/* <EnhancedContextualRecommendations /> */}
-      
-      <div className="text-center py-8">
-        <p>Test de navigation - Onglet Recommandations simplifié</p>
-      </div>
+      <Card className="border-l-4 border-l-green-500 bg-gradient-to-r from-green-50 to-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lightbulb className="w-6 h-6 text-green-600" />
+            Recommandations Contextuelles
+          </CardTitle>
+          <p className="text-gray-600">
+            Système de recommandations intelligentes basé sur l'analyse contextuelle
+          </p>
+        </CardHeader>
+        <CardContent>
+          <p>Interface de recommandations - Fonctionnalités en cours de développement</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
