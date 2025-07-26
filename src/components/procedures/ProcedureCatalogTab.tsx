@@ -83,6 +83,7 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
 
   // Gestionnaire pour consulter une procédure
   const handleViewProcedure = (procedure: any) => {
+    console.log('Consultation de la procédure:', procedure);
     setCurrentProcedure(procedure);
     setShowProcedureModal(true);
   };
@@ -886,18 +887,18 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
               ${currentProcedure.description || 'Aucune description disponible'}
               
               Détails de la procédure:
+              - Catégorie: ${currentProcedure.category || 'Non spécifiée'}
               - Type: ${currentProcedure.type || 'Non spécifié'}
               - Statut: ${currentProcedure.status || 'Non spécifié'}
-              - Institution: ${currentProcedure.institution || 'Non spécifiée'}
-              - Délai estimé: ${currentProcedure.estimatedTime || 'Non spécifié'}
+              - Durée: ${currentProcedure.duration || 'Non spécifiée'}
+              - Complexité: ${currentProcedure.complexity || 'Non spécifiée'}
+              - Popularité: ${currentProcedure.popularity || 'Non spécifiée'}%
+              - Numérisation: ${currentProcedure.digitization || 'Non spécifiée'}
               
-              Étapes de la procédure:
-              ${currentProcedure.steps ? currentProcedure.steps.map((step: any, index: number) => 
-                `${index + 1}. ${step.title}: ${step.description}`
-              ).join('\n') : 'Aucune étape détaillée disponible'}
+              Informations générales:
+              Cette procédure administrative fait partie de la catégorie "${currentProcedure.category}" et est classée comme "${currentProcedure.complexity}" en termes de complexité. La durée moyenne d'exécution est de "${currentProcedure.duration}" et elle est ${currentProcedure.digitization === 'yes' ? 'entièrement numérisée' : currentProcedure.digitization === 'partially' ? 'partiellement numérisée' : 'non numérisée'}.
               
-              Documents requis:
-              ${currentProcedure.requiredDocuments ? currentProcedure.requiredDocuments.join('\n- ') : 'Aucun document requis spécifié'}
+              Pour plus d'informations détaillées sur les étapes spécifiques et les documents requis, veuillez consulter le guide officiel de cette procédure.
             `
           }}
         />
