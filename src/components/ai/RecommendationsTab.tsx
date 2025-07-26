@@ -1,7 +1,7 @@
 
 import React from 'react';
 // import { TabFormField } from '@/components/common/TabFormField';
-import { EnhancedContextualRecommendations } from './EnhancedContextualRecommendations';
+// import { EnhancedContextualRecommendations } from './EnhancedContextualRecommendations';
 
 export function RecommendationsTab() {
   return (
@@ -17,7 +17,13 @@ export function RecommendationsTab() {
         onRefresh={() => console.log('Actualiser recommandations')}
         showActions={true}
       /> */}
-      <EnhancedContextualRecommendations />
+      
+      {/* EnhancedContextualRecommendations temporairement supprimé pour test */}
+      {/* <EnhancedContextualRecommendations /> */}
+      
+      <div className="text-center py-8">
+        <p>Test de navigation - Onglet Recommandations simplifié</p>
+      </div>
     </div>
   );
 }
