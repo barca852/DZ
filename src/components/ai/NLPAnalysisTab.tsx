@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
 import { TabFormField } from '@/components/common/TabFormField';
@@ -7,6 +7,14 @@ import { SpecializedNLP } from './SpecializedNLP';
 import { AICapabilitiesGrid } from './AICapabilitiesGrid';
 
 export function NLPAnalysisTab() {
+  // S'assurer que le composant se monte correctement
+  useEffect(() => {
+    console.log('NLPAnalysisTab mounted');
+    return () => {
+      console.log('NLPAnalysisTab unmounted');
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <TabFormField

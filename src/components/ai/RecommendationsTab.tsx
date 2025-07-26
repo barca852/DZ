@@ -1,9 +1,17 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TabFormField } from '@/components/common/TabFormField';
 import { EnhancedContextualRecommendations } from './EnhancedContextualRecommendations';
 
 export function RecommendationsTab() {
+  // S'assurer que le composant se monte correctement
+  useEffect(() => {
+    console.log('RecommendationsTab mounted');
+    return () => {
+      console.log('RecommendationsTab unmounted');
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <TabFormField
