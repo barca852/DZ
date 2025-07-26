@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SimpleFilterModal } from '../legal/modals/SimpleFilterModal';
 import { SimpleSortModal } from '../legal/modals/SimpleSortModal';
+import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 interface ProcedureCatalogTabProps {
   onAddProcedure?: () => void;
@@ -23,6 +24,8 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+  const [showProcedureModal, setShowProcedureModal] = useState(false);
+  const [currentProcedure, setCurrentProcedure] = useState<any>(null);
 
   const handleTabSearch = (query: string) => {
     setSearchTerm(query);
@@ -76,6 +79,12 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
     const digitization = digitizationId === 'all' ? null : digitizationId;
     setSelectedDigitization(digitization);
     handleFilterChange({ digitization });
+  };
+
+  // Gestionnaire pour consulter une procédure
+  const handleViewProcedure = (procedure: any) => {
+    setCurrentProcedure(procedure);
+    setShowProcedureModal(true);
   };
 
   const types = [
@@ -638,7 +647,11 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
                 </div>
               </div>
               <div className="flex gap-2 mt-4 justify-end">
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleViewProcedure(procedure)}
+                >
                   <Eye className="w-4 h-4 mr-1" />
                   Consulter
                 </Button>
@@ -759,7 +772,12 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleViewProcedure(procedure)}
+                      >
                         <Eye className="w-4 h-4 mr-1" />
                         Consulter
                       </Button>
@@ -856,6 +874,34 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
         onClose={() => setIsSortModalOpen(false)}
         onApplySort={handleSortApplied}
       />
+
+      {/* Modale de consultation de procédure */}
+      {showProcedureModal && currentProcedure && (
+        <DocumentViewerModal
+          isOpen={showProcedureModal}
+          onClose={() => setShowProcedureModal(false)}
+          document={{
+            title: `Procédure: ${currentProcedure.title}`,
+            content: `
+              ${currentProcedure.description || 'Aucune description disponible'}
+              
+              Détails de la procédure:
+              - Type: ${currentProcedure.type || 'Non spécifié'}
+              - Statut: ${currentProcedure.status || 'Non spécifié'}
+              - Institution: ${currentProcedure.institution || 'Non spécifiée'}
+              - Délai estimé: ${currentProcedure.estimatedTime || 'Non spécifié'}
+              
+              Étapes de la procédure:
+              ${currentProcedure.steps ? currentProcedure.steps.map((step: any, index: number) => 
+                `${index + 1}. ${step.title}: ${step.description}`
+              ).join('\n') : 'Aucune étape détaillée disponible'}
+              
+              Documents requis:
+              ${currentProcedure.requiredDocuments ? currentProcedure.requiredDocuments.join('\n- ') : 'Aucun document requis spécifié'}
+            `
+          }}
+        />
+      )}
     </div>
   );
 }
