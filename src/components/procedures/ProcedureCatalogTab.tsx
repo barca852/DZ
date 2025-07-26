@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SimpleFilterModal } from '../legal/modals/SimpleFilterModal';
 import { SimpleSortModal } from '../legal/modals/SimpleSortModal';
-import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 interface ProcedureCatalogTabProps {
   onAddProcedure?: () => void;
@@ -24,8 +23,6 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   const [quickSearchQuery, setQuickSearchQuery] = useState('');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-  const [showProcedureModal, setShowProcedureModal] = useState(false);
-  const [currentProcedure, setCurrentProcedure] = useState<any>(null);
 
   const handleTabSearch = (query: string) => {
     setSearchTerm(query);
@@ -84,8 +81,14 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   // Gestionnaire pour consulter une procédure
   const handleViewProcedure = (procedure: any) => {
     console.log('Consultation de la procédure:', procedure);
-    setCurrentProcedure(procedure);
-    setShowProcedureModal(true);
+    // Dispatch event to open procedure viewer
+    window.dispatchEvent(new CustomEvent('view-procedure', { 
+      detail: { 
+        procedureId: procedure.id,
+        title: procedure.title,
+        type: procedure.type
+      }
+    }));
   };
 
   const types = [
@@ -875,34 +878,6 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
         onClose={() => setIsSortModalOpen(false)}
         onApplySort={handleSortApplied}
       />
-
-      {/* Modale de consultation de procédure */}
-      {showProcedureModal && currentProcedure && (
-        <DocumentViewerModal
-          isOpen={showProcedureModal}
-          onClose={() => setShowProcedureModal(false)}
-          document={{
-            title: `Procédure: ${currentProcedure.title}`,
-            content: `
-              ${currentProcedure.description || 'Aucune description disponible'}
-              
-              Détails de la procédure:
-              - Catégorie: ${currentProcedure.category || 'Non spécifiée'}
-              - Type: ${currentProcedure.type || 'Non spécifié'}
-              - Statut: ${currentProcedure.status || 'Non spécifié'}
-              - Durée: ${currentProcedure.duration || 'Non spécifiée'}
-              - Complexité: ${currentProcedure.complexity || 'Non spécifiée'}
-              - Popularité: ${currentProcedure.popularity || 'Non spécifiée'}%
-              - Numérisation: ${currentProcedure.digitization || 'Non spécifiée'}
-              
-              Informations générales:
-              Cette procédure administrative fait partie de la catégorie "${currentProcedure.category}" et est classée comme "${currentProcedure.complexity}" en termes de complexité. La durée moyenne d'exécution est de "${currentProcedure.duration}" et elle est ${currentProcedure.digitization === 'yes' ? 'entièrement numérisée' : currentProcedure.digitization === 'partially' ? 'partiellement numérisée' : 'non numérisée'}.
-              
-              Pour plus d'informations détaillées sur les étapes spécifiques et les documents requis, veuillez consulter le guide officiel de cette procédure.
-            `
-          }}
-        />
-      )}
     </div>
   );
 }
