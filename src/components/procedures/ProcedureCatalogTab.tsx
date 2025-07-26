@@ -82,13 +82,15 @@ export function ProcedureCatalogTab({ onAddProcedure, onOpenApprovalQueue }: Pro
   const handleViewProcedure = (procedure: any) => {
     console.log('Consultation de la procédure:', procedure);
     // Dispatch event to open procedure viewer
-    window.dispatchEvent(new CustomEvent('view-procedure', { 
+    const event = new CustomEvent('view-procedure', { 
       detail: { 
         procedureId: procedure.id,
         title: procedure.title,
         type: procedure.type
       }
-    }));
+    });
+    console.log('Dispatching event:', event);
+    window.dispatchEvent(event);
   };
 
   const types = [

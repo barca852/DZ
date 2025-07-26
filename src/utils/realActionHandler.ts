@@ -205,6 +205,7 @@ export class RealActionHandler {
 
   // Actions pour les procédures
   private handleViewProcedure(event: CustomEvent) {
+    console.log('RealActionHandler: handleViewProcedure called with:', event.detail);
     const { procedureId, title } = event.detail;
     const procedure = this.store.getProcedure(procedureId);
     
