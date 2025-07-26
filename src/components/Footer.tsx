@@ -41,8 +41,8 @@ export function Footer({ onSectionChange }: FooterProps) {
             {/* Logo and description */}
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-9 bg-white rounded-lg flex items-center justify-center">
-                  <img src="/lovable-uploads/ade65d41-3261-4c5c-8c4e-7253a4752b2e.png" alt="Dalil.dz Logo" className="w-12 h-9 object-contain" />
+                <div className="w-9 h-7 bg-white rounded-lg flex items-center justify-center">
+                  <img src="/lovable-uploads/ade65d41-3261-4c5c-8c4e-7253a4752b2e.png" alt="Dalil.dz Logo" className="w-9 h-7 object-contain" />
                 </div>
                 <h3 className="font-bold text-lg">dalil.dz</h3>
               </div>
