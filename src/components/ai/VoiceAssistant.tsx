@@ -6,27 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Mic, 
   MicOff, 
-  Play, 
-  Pause, 
   Volume2, 
   VolumeX, 
-  Settings, 
-  Headphones,
-  MessageSquare,
-  User,
-  Bot,
-  Clock,
-  Star
+  Languages, 
+  Play, 
+  Pause,
+  Settings,
+  Headphones
 } from 'lucide-react';
-import { DocumentViewerModal } from '@/components/modals/DocumentViewerModal';
 
 export function VoiceAssistant() {
-  // États pour les modales métier
-  const [showConversationModal, setShowConversationModal] = useState(false);
-  const [currentConversation, setCurrentConversation] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState('fr');
@@ -86,35 +75,6 @@ export function VoiceAssistant() {
 
   const handleLanguageChange = (langCode: string) => {
     setCurrentLanguage(langCode);
-  };
-
-  // Fonction de lecture audio réelle
-  const handleReplayResponse = (response: string) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(response);
-      utterance.lang = 'fr-FR';
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      speechSynthesis.speak(utterance);
-      setIsPlaying(true);
-      
-      utterance.onend = () => {
-        setIsPlaying(false);
-      };
-    }
-  };
-
-  // Fonction de rejouer une conversation
-  const handleReplayConversation = (conversation: any) => {
-    setCurrentConversation(conversation);
-    setShowConversationModal(true);
-  };
-
-  // Fonction de continuer une conversation
-  const handleContinueConversation = (conversation: any) => {
-    setCurrentConversation(conversation);
-    setShowConversationModal(true);
-    // Ici on pourrait rouvrir le micro et continuer la conversation
   };
 
   return (
@@ -214,11 +174,10 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => handleReplayResponse(response)}
-                    disabled={isPlaying}
+                    onClick={() => alert('Lecture audio de la réponse')}
                   >
                     <Play className="w-3 h-3 mr-1" />
-                    {isPlaying ? 'Lecture...' : 'Réécouter'}
+                    Réécouter
                   </Button>
                 </div>
                 <p className="text-gray-800">{response}</p>
@@ -257,7 +216,7 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => handleReplayConversation(conv)}
+                    onClick={() => alert('Rejouer la conversation')}
                   >
                     <Play className="w-3 h-3 mr-1" />
                     Rejouer
@@ -265,7 +224,7 @@ export function VoiceAssistant() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => handleContinueConversation(conv)}
+                    onClick={() => alert('Continuer la conversation vocale')}
                   >
                     <Mic className="w-3 h-3 mr-1" />
                     Continuer
@@ -316,18 +275,6 @@ export function VoiceAssistant() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Modale de conversation */}
-      {showConversationModal && currentConversation && (
-        <DocumentViewerModal
-          isOpen={showConversationModal}
-          onClose={() => setShowConversationModal(false)}
-          document={{
-            title: `Conversation vocale - ${currentConversation.timestamp}`,
-            content: `Question: ${currentConversation.question}\n\nRéponse: ${currentConversation.response}\n\nLangue: ${languages.find(l => l.code === currentConversation.language)?.name}\n\nInterface de gestion des conversations vocales.`
-          }}
-        />
-      )}
     </div>
   );
 }
