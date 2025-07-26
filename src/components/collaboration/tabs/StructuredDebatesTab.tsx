@@ -13,7 +13,7 @@ import {
   Calendar,
   Plus
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 export function StructuredDebatesTab() {
   const [createDebateOpen, setCreateDebateOpen] = useState(false);

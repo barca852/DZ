@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Database, Plus, Trash2 } from 'lucide-react';

@@ -16,7 +16,7 @@ import {
   ThumbsDown,
   Edit
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface ApprovalItem {
   id: number;

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Search, Scale, Edit, Trash2 } from "lucide-react";
 import { SavedSearch, SearchCategory } from './types';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface SavedSearchCardProps {
   search: SavedSearch;

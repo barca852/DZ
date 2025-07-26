@@ -1036,23 +1036,7 @@ export const useAppStore = create<AppStore>()(
         }));
       },
       
-      // Recherche globale étendue
-      globalSearch: (query) => {
-        const state = get();
-        return {
-          legalTexts: state.searchLegalTexts(query),
-          procedures: state.searchProcedures(query),
-          news: state.news.filter((item) =>
-            searchInText(item.title, query) || searchInText(item.content, query)
-          ),
-          templates: state.templates.filter((template) =>
-            searchInText(template.name, query) || searchInText(template.content, query)
-          ),
-          forumDiscussions: state.searchForumDiscussions(query),
-          sharedResources: state.searchSharedResources(query),
-          videoTutorials: state.searchVideoTutorials(query),
-        };
-      },
+      // Recherche globale étendue - implémentation déjà définie plus haut
     }),
     {
       name: 'app-storage',

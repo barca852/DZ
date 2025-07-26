@@ -56,28 +56,58 @@ export default defineConfig(({ mode }) => ({
     }
   },
   build: {
-    // Configuration simplifiée pour éviter les erreurs
+    // Configuration optimisée pour réduire la taille des chunks
     rollupOptions: {
-      onwarn: () => {}, // Ignorer les warnings pour simplifier
+      onwarn: (warning, warn) => {
+        // Ignorer les warnings de chunks trop grands en développement
+        if (warning.code === 'CHUNK_SIZE_WARNING' && mode === 'development') return;
+        warn(warning);
+      },
       external: (id) => {
-        // Exclure seulement les modules problématiques
+        // Exclure les modules problématiques
         return id.includes('@huggingface/transformers');
       },
       output: {
-        // Chunks basiques pour éviter les problèmes
-        manualChunks: {
-          'vendor': ['react', 'react-dom'],
-          'ui': ['@radix-ui/react-dialog', '@radix-ui/react-popover'],
-          'pdf': ['pdfjs-dist'],
-          'ocr': ['tesseract.js']
+        // Chunks optimisés pour réduire la taille
+        manualChunks: (id) => {
+          // React et React DOM
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'react-vendor';
+          }
+          // UI Components
+          if (id.includes('@radix-ui') || id.includes('lucide-react')) {
+            return 'ui-components';
+          }
+          // PDF.js
+          if (id.includes('pdfjs-dist')) {
+            return 'pdf-vendor';
+          }
+          // OCR et IA
+          if (id.includes('tesseract') || id.includes('@xenova/transformers')) {
+            return 'ai-vendor';
+          }
+          // Supabase
+          if (id.includes('@supabase')) {
+            return 'supabase-vendor';
+          }
+          // Lodash et utilitaires
+          if (id.includes('lodash') || id.includes('date-fns')) {
+            return 'utils-vendor';
+          }
+          // Autres dépendances
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
         }
       }
     },
     emptyOutDir: true,
     target: 'esnext',
-    // Pas de minification en développement
     minify: mode === 'production' ? 'esbuild' : false,
-    chunkSizeWarningLimit: 1000,
-    sourcemap: mode === 'development'
+    chunkSizeWarningLimit: 500, // Réduit la limite d'avertissement
+    sourcemap: mode === 'development',
+    // Optimisations supplémentaires
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096 // 4KB
   }
 }));

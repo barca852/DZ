@@ -1,4 +1,4 @@
-import { buttonHandlers } from './buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 // Fonction pour ajouter des handlers universels aux boutons sans onClick
 export function addUniversalButtonHandlers() {

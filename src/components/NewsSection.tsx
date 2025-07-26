@@ -13,7 +13,7 @@ import {
   BookOpen,
   Eye
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface NewsItem {
   id: number;

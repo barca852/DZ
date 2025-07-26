@@ -9,7 +9,7 @@ import { ALL_FORM_TEMPLATES } from '@/data/formTemplatesFinal';
 import { FormTemplate } from '@/data/formTemplates';
 import { FormPreviewModal } from './FormPreviewModal';
 import { useToast } from '@/hooks/use-toast';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface FormLibraryProps {
   onSelectTemplate: (template: FormTemplate) => void;

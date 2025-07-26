@@ -15,7 +15,7 @@ import {
   Clock,
   User
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface ForumTopic {
   id: number;

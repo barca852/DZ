@@ -17,7 +17,7 @@ import {
   BookOpen,
   Scale
 } from 'lucide-react';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface FavoriteItem {
   id: string;

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { buttonHandlers } from '@/utils/buttonUtils';
+// Import supprimé - buttonHandlers n'est plus utilisé
 import { Bot, Brain, Zap, TrendingUp, MessageSquare, Sparkles, History, BarChart3, Users, Target, Shield, AlertTriangle, Search, Eye, Download } from 'lucide-react';
 import { SmartAutocomplete } from '@/components/common/SmartAutocomplete';
 

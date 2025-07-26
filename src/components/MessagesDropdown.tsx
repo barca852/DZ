@@ -14,7 +14,7 @@ import {
   Eye,
   Trash2
 } from "lucide-react";
-import { buttonHandlers } from "@/utils/buttonUtils";
+// Import supprimé - buttonHandlers n'est plus utilisé
 
 interface Message {
   id: string;

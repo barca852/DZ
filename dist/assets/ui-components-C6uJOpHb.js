@@ -1,0 +1,1 @@
+function composeEventHandlers(originalEventHandler,ourEventHandler,{checkForDefaultPrevented=!0}={}){return function(event){if(originalEventHandler?.(event),checkForDefaultPrevented===!1||!event.defaultPrevented)return ourEventHandler?.(event)}}function clamp(value,[min,max]){return Math.min(max,Math.max(min,value))}export{clamp as a,composeEventHandlers as c};
