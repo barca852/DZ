@@ -3,8 +3,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
 // import { TabFormField } from '@/components/common/TabFormField';
-import { SpecializedNLP } from './SpecializedNLP';
-import { AICapabilitiesGrid } from './AICapabilitiesGrid';
+// import { SpecializedNLP } from './SpecializedNLP';
+// import { AICapabilitiesGrid } from './AICapabilitiesGrid';
 
 export function NLPAnalysisTab() {
   return (
@@ -21,7 +21,8 @@ export function NLPAnalysisTab() {
         showActions={true}
       /> */}
 
-      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-green-50">
+      {/* Card temporairement supprimée pour test */}
+      {/* <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-green-50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="w-6 h-6 text-blue-600" />
@@ -34,9 +35,14 @@ export function NLPAnalysisTab() {
         <CardContent>
           <AICapabilitiesGrid type="nlp" />
         </CardContent>
-      </Card>
+      </Card> */}
 
-      <SpecializedNLP />
+      {/* SpecializedNLP temporairement supprimé pour test */}
+      {/* <SpecializedNLP /> */}
+      
+      <div className="text-center py-8">
+        <p>Test de navigation - Onglet NLP Avancé simplifié</p>
+      </div>
     </div>
   );
 }
