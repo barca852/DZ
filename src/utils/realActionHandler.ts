@@ -289,7 +289,9 @@ export class RealActionHandler {
   private handleExecuteSavedSearch(event: CustomEvent) {
     const { searchId } = event.detail;
     const results = this.store.executeSavedSearch(searchId);
-    this.displaySearchResults(results);
+    // Suppression de l'affichage automatique des résultats de recherche
+    // this.displaySearchResults(results);
+    console.log('Recherche sauvegardée exécutée:', searchId, results);
   }
 
   private handleEditSavedSearch(event: CustomEvent) {
@@ -540,7 +542,9 @@ export class RealActionHandler {
 
   private performSearch(query: string, options: any = {}) {
     const results = this.store.globalSearch(query);
-    this.displaySearchResults(results, query);
+    // Suppression de l'affichage automatique des résultats de recherche
+    // this.displaySearchResults(results, query);
+    console.log('Recherche effectuée:', query, results);
   }
 
   private displaySearchResults(results: any, query?: string) {
